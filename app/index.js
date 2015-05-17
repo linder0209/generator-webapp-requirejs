@@ -1,4 +1,5 @@
 'use strict';
+var join = require('path').join;
 //Yeoman生成器
 var generators = require('yeoman-generator');
 //用来显示信息
@@ -7,6 +8,20 @@ var yosay = require('yosay');
 var chalk = require('chalk');
 
 module.exports = generators.Base.extend({
+
+  // The name `constructor` is important here
+  constructor: function () {
+    // Calling the super constructor is important so our generator is correctly set up
+    generators.Base.apply(this, arguments);
+    // setup the test-framework property, Gruntfile template will need this
+    this.option('test-framework', {
+      desc: 'Test framework to be invoked',
+      type: String,
+      defaults: 'mocha'
+    });
+    this.testFramework = this.options['test-framework'];
+  },
+
   /**
    * 优先级 1
    * initializing - 你的初始化方法（检测当前项目状态，获取配置等）
@@ -93,99 +108,95 @@ module.exports = generators.Base.extend({
    * Where you write the generator specific files (routes, controllers, etc)
    */
   writing: {
-    app: function () {
-      this.fs.copy(
-        this.templatePath('_package.json'),
-        this.destinationPath('package.json')
-      );
-      this.fs.copy(
-        this.templatePath('_bower.json'),
-        this.destinationPath('bower.json')
-      );
+    gruntfile: function () {
+      console.info('Gruntfile.js');
+      this.template('Gruntfile.js');
     },
+    packageJSON: function () {
+      this.template('_package.json', 'package.json');
+    },
+    git: function () {
+      this.template('gitignore', '.gitignore');
+      this.copy('gitattributes', '.gitattributes');
+    },
+    bower: function () {
+      var bower = {
+        name: this._.slugify(this.appname),
+        dependencies: {}
+      };
 
-    projectfiles: function () {
-      this.fs.copy(
-        this.templatePath('editorconfig'),
-        this.destinationPath('.editorconfig')
+      if (this.includeBootstrap) {
+        var bs = 'bootstrap';
+        bower.dependencies[bs] = '~3.3.4';
+      } else {
+        bower.dependencies.jquery = '~1.11.3';
+      }
+
+      if (this.includeModernizr) {
+        bower.dependencies.modernizr = '~2.8.2';
+      }
+
+      this.copy('bowerrc', '.bowerrc');
+      this.write('bower.json', JSON.stringify(bower, null, 2));
+    },
+    jshint: function () {
+      this.copy('jshintrc', '.jshintrc');
+    },
+    editorConfig: function () {
+      this.copy('editorconfig', '.editorconfig');
+    },
+    mainStylesheet: function () {
+      var css = 'main.css';
+      this.template(css, 'app/styles/' + css);
+    },
+    writeIndex: function () {
+      this.indexFile = this.engine(
+        this.readFileAsString(join(this.sourceRoot(), 'index.html')),
+        this
       );
-      this.fs.copy(
-        this.templatePath('jshintrc'),
-        this.destinationPath('.jshintrc')
-      );
+
+      // wire Bootstrap plugins
+      if (this.includeBootstrap) {
+        var bs = 'bower_components/bootstrap/js/';
+
+        this.indexFile = this.appendFiles({
+          html: this.indexFile,
+          fileType: 'js',
+          optimizedPath: 'scripts/plugins.js',
+          sourceFileList: [
+            bs + 'affix.js',
+            bs + 'alert.js',
+            bs + 'dropdown.js',
+            bs + 'tooltip.js',
+            bs + 'modal.js',
+            bs + 'transition.js',
+            bs + 'button.js',
+            bs + 'popover.js',
+            bs + 'carousel.js',
+            bs + 'scrollspy.js',
+            bs + 'collapse.js',
+            bs + 'tab.js'
+          ],
+          searchPath: '.'
+        });
+      }
+
+      this.indexFile = this.appendFiles({
+        html: this.indexFile,
+        fileType: 'js',
+        optimizedPath: 'scripts/main.js',
+        sourceFileList: ['scripts/main.js'],
+        searchPath: ['app', '.tmp']
+      });
+    },
+    app: function () {
+      this.directory('app');
+      this.mkdir('app/scripts');
+      this.mkdir('app/styles');
+      this.mkdir('app/images');
+      this.write('app/index.html', this.indexFile);
+      this.copy('main.js', 'app/scripts/main.js');
     }
-
-    //tests: function () {
-    //  this.template('test-app.js', 'test/test-app.js');
-    //},
-    //
-    //gruntfile: function () {
-    //  this.template('Gruntfile.js');
-    //},
-    //
-    //bower: function () {
-    //  var bower = {
-    //    name: this._.slugify(this.appname),
-    //    private: true,
-    //    dependencies: {}
-    //  };
-    //
-    //  if (this.includeBootstrap) {
-    //    var bs = 'bootstrap';
-    //    bower.dependencies[bs] = '~3.3.0';
-    //  } else {
-    //    bower.dependencies.jquery = '~1.11.1';
-    //  }
-    //
-    //  if (this.includeModernizr) {
-    //    bower.dependencies.modernizr = '~2.8.2';
-    //  }
-    //
-    //  this.copy('bowerrc', '.bowerrc');
-    //  this.write('bower.json', JSON.stringify(bower, null, 2));
-    //},
-    //
-    //writeIndex: function () {
-    //  this.indexFile = this.engine(
-    //    this.readFileAsString(join(this.sourceRoot(), 'index.html')),
-    //    this
-    //  );
-    //
-    //  // wire Bootstrap plugins
-    //  if (this.includeBootstrap && !this.includeSass) {
-    //    var bs = 'bower_components/bootstrap/js/';
-    //
-    //    this.indexFile = this.appendFiles({
-    //      html: this.indexFile,
-    //      fileType: 'js',
-    //      optimizedPath: 'scripts/plugins.js',
-    //      sourceFileList: [
-    //        bs + 'affix.js',
-    //        bs + 'alert.js',
-    //        bs + 'dropdown.js',
-    //        bs + 'tooltip.js',
-    //        bs + 'modal.js',
-    //        bs + 'transition.js',
-    //        bs + 'button.js',
-    //        bs + 'popover.js',
-    //        bs + 'carousel.js',
-    //        bs + 'scrollspy.js',
-    //        bs + 'collapse.js',
-    //        bs + 'tab.js'
-    //      ],
-    //      searchPath: '.'
-    //    });
-    //  }
-    //
-    //  this.indexFile = this.appendFiles({
-    //    html: this.indexFile,
-    //    fileType: 'js',
-    //    optimizedPath: 'scripts/main.js',
-    //    sourceFileList: ['scripts/main.js'],
-    //    searchPath: ['app', '.tmp']
-    //  });
-    //}
-
   },
 
   /**
@@ -203,9 +214,20 @@ module.exports = generators.Base.extend({
    * install - Where installation are run (npm, bower)
    */
   install: function () {
-    this.installDependencies({
-      skipInstall: this.options['skip-install'],
-      bower: false
+    this.on('end', function () {
+      this.invoke(this.options['test-framework'], {
+        options: {
+          'skip-message': this.options['skip-install-message'],
+          'skip-install': this.options['skip-install']
+        }
+      });
+
+      if (!this.options['skip-install']) {
+        this.installDependencies({
+          skipMessage: this.options['skip-install-message'],
+          skipInstall: this.options['skip-install']
+        });
+      }
     });
   },
 
@@ -218,12 +240,7 @@ module.exports = generators.Base.extend({
     this.log(yosay(
       'You have generated a webapp basing on RequireJS generator.'
     ));
-  },
-
-
-  // The name `constructor` is important here
-  constructor: function () {
-    // Calling the super constructor is important so our generator is correctly set up
-    generators.Base.apply(this, arguments);
   }
+
+
 });

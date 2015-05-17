@@ -5,6 +5,8 @@
   "license": "MIT",
   "main": "app/index.js",
   "repository": "linder0209/generator-webapp-requirejs",
+  "homepage": "https://github.com/linder0209/generator-webapp-requirejs",
+  "bugs": "https://github.com/linder0209/generator-webapp-requirejs/issues",
   "author": {
     "name": "linder0209",
     "email": "linder0209@126.com",
@@ -14,21 +16,29 @@
     "node": ">=0.10.0"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha --reporter spec"
   },
   "files": [
     "app"
   ],
   "keywords": [
     "yeoman-generator",
-    "RequireJS"
+    "jquery",
+    "RequireJS",
+    "modernizr",
+    "grunt"
   ],
   "dependencies": {
-    "yeoman-generator": "^0.18.10",
-    "yosay": "^1.0.3",
-    "chalk": "^1.0.0"
+    "chalk": "^1.0.0",
+    "cheerio": "^0.18.0",
+    "yeoman-generator": "^0.18.9",
+    "yosay": "^1.0.2"
   },
   "devDependencies": {
-    "mocha": "^2.2.1"
+    "mocha": "*",
+    "underscore": "^1.6.0"
+  },
+  "peerDependencies": {
+    "generator-mocha": ">=0.1.0"
   }
 }
