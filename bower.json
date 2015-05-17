@@ -1,6 +1,0 @@
-{
-  "name": "generator-webapp-requirejs",
-  "dependencies": {
-    "jquery": "~1.11.3"
-  }
-}
