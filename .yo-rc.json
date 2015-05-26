@@ -1,6 +1,3 @@
 {
-  "generator-webapp-requirejs": {
-    "appPath": "app",
-    "appName": "Temp"
-  }
+  "generator-webapp-requirejs": {}
 }
