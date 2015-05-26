@@ -39,6 +39,6 @@
     "underscore": "^1.6.0"
   },
   "peerDependencies": {
-    "generator-mocha": ">=0.1.0"
+    "generator-mocha": ">=0.1.3"
   }
 }

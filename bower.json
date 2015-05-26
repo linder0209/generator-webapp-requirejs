@@ -1,0 +1,13 @@
+{
+  "name": "generatorwebapprequirejs",
+  "description": "A webapp app basing on requirejs.",
+  "version": "0.0.1",
+  "dependencies": {
+    "jquery": "~1.11.3",
+    "lodash": "~2.4.1",
+    "requirejs": "*",
+    "requirejs-text": "~2.0.10",
+    "bootstrap": "*"
+    },
+    "devDependencies": {}
+}

@@ -7,13 +7,26 @@
   "curly": true,
   "eqeqeq": true,
   "jquery": true,
-  "immed": true,
   "indent": 2,
   "latedef": true,
-  "newcap": true,
   "noarg": true,
   "quotmark": "single",
   "undef": true,
-  "unused": true,
-  "strict": true
+  "unused": "vars",
+  "strict": true,
+  "nonew": true,
+  "forin": true,
+  "globals": {
+    "<%= appname %>": true,
+    "<%= _.slugify(appname) %>": true,
+    "JST": false,
+    "beforeEach": false,
+    "describe": false,
+    "it": false,
+    "assert": true,
+    "expect": true,
+    "should": true,
+    "require": false,
+    "define": false
+  }
 }

@@ -1,0 +1,15 @@
+{
+  "name": "<%= _.slugify(appname) %>",
+  "description": "<%= appdescription.replace('\"', '\\"') %>",
+  "version": "0.0.1",
+  "dependencies": {
+    "jquery": "~1.11.3",
+    "lodash": "~2.4.1",
+    "requirejs": "*",
+    "requirejs-text": "~2.0.10"<% if (includeBootstrap) { %>,
+    "bootstrap": "*"<% } if (includeModernizr) { %>,
+    "modernizr": "*"<% } if (templateFramework === 'handlebars') { %>,
+    "handlebars": "~1.3.0"<% } %>
+    },
+    "devDependencies": {}
+}
